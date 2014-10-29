@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -48,15 +49,19 @@ public class InterfaceComponents extends JPanel{
 	private static JLabel rotate = new JLabel("Rotate:");
 	private static JLabel translateX = new JLabel("x:");
 	private static JLabel translateY = new JLabel("y:");
+	private static JLabel translateZ = new JLabel("z:");
 	private static JLabel scaleX = new JLabel("x:");
 	private static JLabel scaleY = new JLabel("y:");
+	private static JLabel scaleZ = new JLabel("z:");
 	private static JLabel rotateX = new JLabel("x:");
 	private static JLabel rotateY = new JLabel("y:");
 	private static JLabel rotateZ = new JLabel("z:");
 	private static JTextField translateXField = new JTextField(30);
 	private static JTextField translateYField = new JTextField(30);
+	private static JTextField translateZField = new JTextField(30);
 	private static JTextField scaleXField = new JTextField(40);
 	private static JTextField scaleYField = new JTextField(40);
+	private static JTextField scaleZField = new JTextField(40);
 	private static JTextField rotateXField = new JTextField(40); 
 	private static JTextField rotateYField = new JTextField(40); 
 	private static JTextField rotateZField = new JTextField(40); 
@@ -80,11 +85,11 @@ public class InterfaceComponents extends JPanel{
 		pane.add(panel, BorderLayout.LINE_START);
 		
 		JPanel inputPanel = new JPanel();
-		inputPanel.setPreferredSize(new Dimension(300, 100));
+		inputPanel.setPreferredSize(new Dimension(300, 170));
 		inputPanel.setBackground(Color.GRAY);
 		
 		JPanel inputPanel2 = new JPanel();
-		inputPanel2.setPreferredSize(new Dimension(300, 317));
+		inputPanel2.setPreferredSize(new Dimension(300, 200));
 		inputPanel2.setBackground(Color.GRAY);
 	
 		JPanel inputPanel3 = new JPanel();
@@ -98,47 +103,7 @@ public class InterfaceComponents extends JPanel{
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(inputPanel);
 		panel.add(inputPanel2);
-		panel.add(inputPanel3);
-		/*
-		JButton open = new JButton("Open File");
-		JLabel viewportSize = new JLabel("ViewPort Dimesions");
-		JLabel widthLabel = new JLabel("Width:");
-		JLabel heightLabel = new JLabel("Height:");
-		JTextField viewportWidth = new JTextField(40);
-		JTextField viewportHeight = new JTextField(40);
-		JLabel viewportLocation = new JLabel("ViewPort Location:");
-		JLabel x = new JLabel("x:       ");
-		JLabel y = new JLabel("y:        ");
-		JTextField xLocation = new JTextField(50);
-		JTextField yLocation = new JTextField(50);
-		JButton createViewport = new JButton("Create Viewport");
-		JButton drawLines = new JButton("Draw Lines");
-		JLabel display = new JLabel("Display Characteristics");
-		JLabel distance = new JLabel("D:");
-		JLabel size = new JLabel("S:");
-		JButton setDisplay = new JButton("Set Display");
-		JTextField distanceField = new JTextField(40);
-		 */
-		JTextField sizeField = new JTextField(40);
-		JLabel translate = new JLabel("Translate:");
-		JLabel scale = new JLabel("Scale:");
-		JLabel rotate = new JLabel("Rotate:");
-		JLabel translateX = new JLabel("x:");
-		JLabel translateY = new JLabel("y:");
-		JLabel scaleX = new JLabel("x:");
-		JLabel scaleY = new JLabel("y:");
-		JLabel rotateX = new JLabel("x:");
-		JLabel rotateY = new JLabel("y:");
-		JLabel rotateZ = new JLabel("z:");
-		JTextField translateXField = new JTextField(30);
-		JTextField translateYField = new JTextField(30);
-		JTextField scaleXField = new JTextField(40);
-		JTextField scaleYField = new JTextField(40);
-		JTextField rotateXField = new JTextField(40); 
-		JTextField rotateYField = new JTextField(40); 
-		JTextField rotateZField = new JTextField(40); 
-		JButton applyTransformations = new JButton("Apply Transformations");
-		
+		panel.add(inputPanel3);		
 		
 		Font bold = new Font(defaultFont.getFontName(), Font.BOLD, defaultFont.getSize());
 		viewportSize.setFont(bold);
@@ -166,8 +131,8 @@ public class InterfaceComponents extends JPanel{
 		
 		MigLayout mig3 = new MigLayout(
 				"",
-				"[35:35:35][50:50:50][35:35:35][50:50:50][35:35:35][50:50:50]",
-				"[][]30[]"
+				"23[80:80:80][80:80:80][80:80:80]",
+				"[][]10[][]10[][]20[]"
 				);
 		
 		inputPanel3.setLayout(mig3);
@@ -204,57 +169,49 @@ public class InterfaceComponents extends JPanel{
 		inputPanel2.add(setDisplay, "cell 0 5, gapleft 37");
 		
 		
-		inputPanel2.add(translate, "cell 0 6");
-		inputPanel2.add(translateX, "cell 0 7, split 2");
-		inputPanel2.add(translateXField);
-		inputPanel2.add(translateY, "cell 1 7, split 2");
-		inputPanel2.add(translateYField);
+		inputPanel3.add(translate, "cell 0 0");
+		inputPanel3.add(translateX, "cell 0 1, split 2");
+		inputPanel3.add(translateXField);
+		inputPanel3.add(translateY, "cell 1 1, split 2");
+		inputPanel3.add(translateYField);
+		inputPanel3.add(translateZ, "cell 2 1, split 2");
+		inputPanel3.add(translateZField);
 		
 		
-		inputPanel2.add(scale, "cell 0 8");
-		inputPanel2.add(scaleX, "cell 0 9, split 2");
-		inputPanel2.add(scaleXField);
-		inputPanel2.add(scaleY, "cell 1 9, split 2");
-		inputPanel2.add(scaleYField);
+		inputPanel3.add(scale, "cell 0 2");
+		inputPanel3.add(scaleX, "cell 0 3, split 2");
+		inputPanel3.add(scaleXField);
+		inputPanel3.add(scaleY, "cell 1 3, split 2");
+		inputPanel3.add(scaleYField);
+		inputPanel3.add(scaleZ, "cell 2 3, split 2");
+		inputPanel3.add(scaleZField);
 		
 		
 		
-		inputPanel3.add(rotate, "cell 0 0");
-		inputPanel3.add(rotateX, "cell 0 1");
-		inputPanel3.add(rotateXField, "cell 1 1");
-		inputPanel3.add(rotateY, "cell 2 1");
-		inputPanel3.add(rotateYField, "cell 3 1");
-		inputPanel3.add(rotateZ, "cell 4 1");
-		inputPanel3.add(rotateZField, "cell 5 1");
-		inputPanel3.add(applyTransformations, "cell 0 2, gapleft 40");
+		inputPanel3.add(rotate, "cell 0 4");
+		inputPanel3.add(rotateX, "cell 0 5, split 2");
+		inputPanel3.add(rotateXField);
+		inputPanel3.add(rotateY, "cell 1 5, split 2");
+		inputPanel3.add(rotateYField);
+		inputPanel3.add(rotateZ, "cell 2 5, split 2");
+		inputPanel3.add(rotateZField);
+		inputPanel3.add(applyTransformations, "cell 0 7, gapleft 40");
 		
-		/*
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setBounds(0, 0 , screenSize.width, screenSize.height);
-		frame.getContentPane().add(new UserInterface());
-		frame.setVisible(true);
-		 */
+		setDisplay.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				UserInput.setDistance(distanceField.getText());
+				UserInput.setDistance(sizeField.getText());
+				System.out.println("dnfjsdnfkds");
+			}
+		});
+		
 	}
 	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 }

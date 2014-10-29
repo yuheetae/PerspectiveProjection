@@ -2,98 +2,96 @@ package edu.uga.cs.cs4810;
 
 public class UserInput {
 	
-	private int width, height, distance, size, translateX, translateY;
-	private double scaleX, scaleY, rotateX, rotateY, rotateZ;
+	private static int width, height, distance, size, translateX, translateY;
+	private static double scaleX, scaleY, rotateX, rotateY, rotateZ;
 	
-	public void setWidth(int w) {
-		width = w;
+	public static void setWidth(String w) {
+		width = Integer.parseInt(w);
 	}
 	
-	public void setHeight(int h) {
-		height = h;
+	public static void setHeight(String h) {
+		height = Integer.parseInt(h);
 	}
 	
-	public void setDistance(int d) {
-		
+	public static void setDistance(String d) {
+		distance = Integer.parseInt(d);
 	}
 	
-	public void setSize(int s) {
-		size = s;
+	public static void setSize(String s) {
+		size = Integer.parseInt(s);
 	}
 	
-	public void setTranslateX(int t) {
-		translateX = t;
+	public static void setTranslateX(String t) {
+		translateX = Integer.parseInt(t);
 	}
 	
-	public void setTranslateY(int t) {
-		translateY = t;
+	public static void setTranslateY(String t) {
+		translateY = Integer.parseInt(t);
 	}
 	
-	public void setScaleX(double s) {
-		scaleX = s;
+	public static void setScaleX(String s) {
+		scaleX = Double.parseDouble(s);
 	}
 	
-	public void setScaleY(double s) {
-		scaleY = s;
+	public static void setScaleY(String s) {
+		scaleY = Double.parseDouble(s);
 	}
 	
-	public void setRotateX(double r) {
-		rotateX = r;
+	public static void setRotateX(String r) {
+		rotateX = Double.parseDouble(r);
 	}
 	
-	public void setRotateY(double r) {
-		rotateY = r;
+	public static void setRotateY(String r) {
+		rotateY = Double.parseDouble(r);
 	}
 	
-	public void setRotateZ(double r) {
-		rotateZ = r;
+	public static void setRotateZ(String r) {
+		rotateZ = Double.parseDouble(r);
 	}
 	
-	public int getWidth() {
+	public static int getWidth() {
 		return width;
 	}
 	
-	public int getHeight() {
+	public static int getHeight() {
 		return height;
 	}
 	
-	public int getDistance() {
+	public static int getDistance() {
 		return distance;
 	}
 	
-	public int getSize() {
+	public static int getSize() {
 		return size;
 	}
 	
-	public int getTranslateX() {
+	public static int getTranslateX() {
 		return translateX;
 	}
 	
-	public int getTranslateY() {
+	public static int getTranslateY() {
 		return translateY;
 	}
 	
-	public double getScaleX() {
+	public static double getScaleX() {
 		return scaleX;
 	}
 	
-	public double getScaleY() {
+	public static double getScaleY() {
 		return scaleY;
 	}
 	
-	public double getRotateX() {
+	public static double getRotateX() {
 		return rotateX;
 	}
 	
-	public double getRotateY() {
+	public static double getRotateY() {
 		return rotateY;
 	}
 	
-	public double getRotateZ() {
+	public static double getRotateZ() {
 		return rotateZ;
 	}
-	
-	
 	
 	
 }

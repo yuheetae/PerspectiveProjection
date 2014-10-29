@@ -13,6 +13,7 @@ public class Transformations {
 	public double[][] BasicScale(double Sx, double Sy, double Sz) {
 		if(Sx == 0) Sx=1;
 		if(Sy == 0) Sy=1;
+		if(Sz == 0)	Sz=1;
 		double[][] matrix = {{Sx, 0,  0,  0}, 
 							 {0,  Sy, 0,  0},
 							 {0,  0,  Sz, 0},
