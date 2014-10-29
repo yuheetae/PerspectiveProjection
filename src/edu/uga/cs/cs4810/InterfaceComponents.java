@@ -3,9 +3,11 @@ package edu.uga.cs.cs4810;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,35 +21,75 @@ import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 
-public class UserInterface extends JPanel{
+public class InterfaceComponents extends JPanel{
 	
 	private final static Font defaultFont = new JLabel().getFont();
+	private static JButton open = new JButton("Open File");
+	private static JLabel viewportSize = new JLabel("ViewPort Dimesions");
+	private static JLabel widthLabel = new JLabel("Width:");
+	private static JLabel heightLabel = new JLabel("Height:");
+	private static JTextField viewportWidth = new JTextField(40);
+	private static JTextField viewportHeight = new JTextField(40);
+	private static JLabel viewportLocation = new JLabel("ViewPort Location:");
+	private static JLabel x = new JLabel("x:       ");
+	private static JLabel y = new JLabel("y:        ");
+	private static JTextField xLocation = new JTextField(50);
+	private static JTextField yLocation = new JTextField(50);
+	private static JButton createViewport = new JButton("Create Viewport");
+	private static JButton drawLines = new JButton("Draw Lines");
+	private static JLabel display = new JLabel("Display Characteristics");
+	private static JLabel distance = new JLabel("D:");
+	private static JLabel size = new JLabel("S:");
+	private static JButton setDisplay = new JButton("Set Display");
+	private static JTextField distanceField = new JTextField(40);
+	private static JTextField sizeField = new JTextField(40);
+	private static JLabel translate = new JLabel("Translate:");
+	private static JLabel scale = new JLabel("Scale:");
+	private static JLabel rotate = new JLabel("Rotate:");
+	private static JLabel translateX = new JLabel("x:");
+	private static JLabel translateY = new JLabel("y:");
+	private static JLabel scaleX = new JLabel("x:");
+	private static JLabel scaleY = new JLabel("y:");
+	private static JLabel rotateX = new JLabel("x:");
+	private static JLabel rotateY = new JLabel("y:");
+	private static JLabel rotateZ = new JLabel("z:");
+	private static JTextField translateXField = new JTextField(30);
+	private static JTextField translateYField = new JTextField(30);
+	private static JTextField scaleXField = new JTextField(40);
+	private static JTextField scaleYField = new JTextField(40);
+	private static JTextField rotateXField = new JTextField(40); 
+	private static JTextField rotateYField = new JTextField(40); 
+	private static JTextField rotateZField = new JTextField(40); 
+	private static JButton applyTransformations = new JButton("Apply Transformations");
 	
-	public static void createAndShowGUI() {
+	//public static void createAndShowGUI() {
+	public static void addComponent(Container pane) {
 
+		/*
 		JFrame frame = new JFrame("2D Basic Transformations");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		frame.getContentPane().setLayout(new BorderLayout());
+		*/
+		
+		pane.setLayout(new BorderLayout());
 		
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(300, 786));
 		panel.setBackground(Color.GRAY);
-		frame.getContentPane().add(panel, BorderLayout.LINE_START);
+		//frame.getContentPane().add(panel, BorderLayout.LINE_START);
+		pane.add(panel, BorderLayout.LINE_START);
 		
 		JPanel inputPanel = new JPanel();
 		inputPanel.setPreferredSize(new Dimension(300, 100));
 		inputPanel.setBackground(Color.GRAY);
 		
 		JPanel inputPanel2 = new JPanel();
-		inputPanel2.setPreferredSize(new Dimension(300, 311));//242
+		inputPanel2.setPreferredSize(new Dimension(300, 317));
 		inputPanel2.setBackground(Color.GRAY);
-		
 	
 		JPanel inputPanel3 = new JPanel();
 		inputPanel3.setPreferredSize(new Dimension(300, 300));
 		inputPanel3.setBackground(Color.GRAY);
-		//inputPanel.add(inputPanel2, BorderLayout.PAGE_END);
 		
 		inputPanel.setAlignmentX( Component.LEFT_ALIGNMENT );
 		inputPanel2.setAlignmentX( Component.LEFT_ALIGNMENT );
@@ -57,7 +99,7 @@ public class UserInterface extends JPanel{
 		panel.add(inputPanel);
 		panel.add(inputPanel2);
 		panel.add(inputPanel3);
-		
+		/*
 		JButton open = new JButton("Open File");
 		JLabel viewportSize = new JLabel("ViewPort Dimesions");
 		JLabel widthLabel = new JLabel("Width:");
@@ -76,6 +118,7 @@ public class UserInterface extends JPanel{
 		JLabel size = new JLabel("S:");
 		JButton setDisplay = new JButton("Set Display");
 		JTextField distanceField = new JTextField(40);
+		 */
 		JTextField sizeField = new JTextField(40);
 		JLabel translate = new JLabel("Translate:");
 		JLabel scale = new JLabel("Scale:");
@@ -115,7 +158,7 @@ public class UserInterface extends JPanel{
 		
 		MigLayout mig2 = new MigLayout(
 				"",
-				"57[80:80:80]20[80:80:80]",
+				"57[80:80:80]20[80:80:80]0",
 				"[][]15[]30[][]15[]30[][][]"
 				);
 		inputPanel2.setLayout(mig2);
@@ -185,20 +228,33 @@ public class UserInterface extends JPanel{
 		inputPanel3.add(rotateZField, "cell 5 1");
 		inputPanel3.add(applyTransformations, "cell 0 2, gapleft 40");
 		
+		/*
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setBounds(0, 0 , screenSize.width, screenSize.height);
 		frame.getContentPane().add(new UserInterface());
 		frame.setVisible(true);
-
+		 */
 	}
 	
-	public static void main(String[] args) {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				createAndShowGUI();
-			} // run
-		});
 
-	} // main
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
