@@ -2,8 +2,13 @@ package edu.uga.cs.cs4810;
 
 public class UserInput {
 	
-	private static int width, height, distance, size, translateX, translateY;
+	private static int width, height, xLocation, yLocation, distance, size, translateX, translateY;
 	private static double scaleX, scaleY, rotateX, rotateY, rotateZ;
+	private static double[][] datalines;
+	
+	public static void setDatalines(double[][] data) {
+		datalines = data;
+	}
 	
 	public static void setWidth(String w) {
 		width = Integer.parseInt(w);
@@ -11,6 +16,14 @@ public class UserInput {
 	
 	public static void setHeight(String h) {
 		height = Integer.parseInt(h);
+	}
+	
+	public static void setXLocation(String x) {
+		xLocation = Integer.parseInt(x);
+	}
+	
+	public static void setYLocation(String y) {
+		yLocation = Integer.parseInt(y);
 	}
 	
 	public static void setDistance(String d) {
@@ -93,5 +106,14 @@ public class UserInput {
 		return rotateZ;
 	}
 	
+	public static int getXLocation() {
+		return xLocation;
+	}
 	
+	public static int getYLocation() {
+		return yLocation;
+	
+	}
 }
+
+
