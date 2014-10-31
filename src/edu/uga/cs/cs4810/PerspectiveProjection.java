@@ -25,126 +25,34 @@ import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 
-public class InterfaceComponents extends JFrame{ //start class
+public class PerspectiveProjection extends JFrame{ 
 
-	/*
-	public void paintComponent(Graphics g) {
-		//if(clicked == true) {
-			super.paintComponent(g);
-			double[][] data;
-			BufferedImage viewport = Transformations.ViewportSpec(UserInput.getWidth(), UserInput.getHeight());
-			System.out.println(UserInput.getWidth() + UserInput.getHeight());
-			/*
-			if(clicked2==true) {
-			data = datalines; 
-			viewport = image.Displaypixel(data);
-			}
-
-			g.drawImage(viewport, UserInput.getXLocation(), UserInput.getYLocation(), this);
-		//}
-	}*/
-
-	public static void createAndShowGUI() {//start method
+	public static void createAndShowGUI() {
 
 		JFrame frame = new JFrame("2D Basic Transformations");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
 		frame.add(new PaintPanel());
-
-		/*
-		open.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				JFileChooser fc = new JFileChooser();
-				int returnVal = fc.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					String data = fc.getSelectedFile().getAbsolutePath();
-					try {
-						UserInput.setDatalines(Transformations.Inputlines(data));
-						//num = newFile.getLineNumber();
-					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-
-					}
-				}
-			}
-		});
-
-		setDisplay.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				UserInput.setDistance(distanceField.getText());
-				UserInput.setDistance(sizeField.getText());
-
-			}
-		});
-		applyTransformations.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				double[][] translate = Transformations.BasicTranslate(Integer.parseInt(translateXField.getText()), 
-											   						  Integer.parseInt(translateYField.getText()), 
-											   						  Integer.parseInt(translateZField.getText()));
-				double[][] scale = Transformations.BasicScale(Integer.parseInt(scaleXField.getText()), 
-															  Integer.parseInt(scaleYField.getText()), 	
-															  Integer.parseInt(scaleZField.getText()));
-				double[][] rotateX = Transformations.BasicXRotate(Integer.parseInt(rotateXField.getText()));
-				double[][] rotateY = Transformations.BasicYRotate(Integer.parseInt(rotateYField.getText()));	
-				double[][] rotateZ = Transformations.BasicZRotate(Integer.parseInt(rotateZField.getText()));
-
-				double[][] concat = Transformations.Concatenate(Transformations.Concatenate(translate, scale), rotateZ);
-				double[][] transformation = Transformations.Concatenate(Transformations.Concatenate(concat, rotateY), rotateX);	
-
-			}
-		});
-		createViewport.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				UserInput.setWidth(viewportWidth.getText());
-				UserInput.setHeight(viewportHeight.getText());
-				UserInput.setXLocation(xLocation.getText());
-				UserInput.setYLocation(yLocation.getText()); 
-				System.out.println(UserInput.getWidth() + "   " +UserInput.getHeight()+ "   " +UserInput.getXLocation()+ "   " + UserInput.getYLocation());
-				clicked = true;
-				paintPanel.repaint();
-			}
-		});
-
-		 */
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setBounds(0, 0 , screenSize.width, screenSize.height);
-		//frame.getContentPane().add(new InterfaceComponents());
 		frame.setVisible(true);
 
 
-	}//End of method
+	}
 
 	public static void main(String[] args) {//start main
-		//Schedule a job for the event-dispatching thread:
-		//creating and showing this application's GUI.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				createAndShowGUI();
 			}
 		});
-	}//end main
-
-
-}//End of class
+	}
+}
 
 
 
-class PaintPanel extends JPanel {//start class
+class PaintPanel extends JPanel {
 	private boolean clicked = false;
 
 	PaintPanel() {
@@ -180,7 +88,6 @@ class PaintPanel extends JPanel {//start class
 					String data = fc.getSelectedFile().getAbsolutePath();
 					try {
 						UserInput.setDatalines(Transformations.Inputlines(data));
-						//num = newFile.getLineNumber();
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -224,13 +131,11 @@ class PaintPanel extends JPanel {//start class
 	}
 
 	
-	public void paintComponent(Graphics g) {//start method
+	public void paintComponent(Graphics g) {
 		if(clicked == true) {
 			super.paintComponent(g);
 			double[][] data;
 			BufferedImage viewport = Transformations.ViewportSpec(UserInput.getWidth(), UserInput.getHeight());
-			//BufferedImage viewport = Transformations.ViewportSpec(200, 200);
-			//System.out.println(UserInput.getWidth() + UserInput.getHeight());
 			/*
 			if(clicked2==true) {
 			data = datalines; 
@@ -238,15 +143,14 @@ class PaintPanel extends JPanel {//start class
 			}
 			 */
 			g.drawImage(viewport, UserInput.getXLocation(), UserInput.getYLocation(), this);
-			//g.drawImage(viewport, 500, 500, this);
 		}
-	}//ends method
+	}
 	
-}//end class
+}
 
 
 
-class InputPanel extends JPanel {//class InputPanel start
+class InputPanel extends JPanel {
 
 	final static Font defaultFont = new JLabel().getFont();
 	static JButton open = new JButton("Open File");
@@ -292,7 +196,7 @@ class InputPanel extends JPanel {//class InputPanel start
 	static JButton applyTransformations = new JButton("Apply Transformations");
 	private boolean clicked = false;
 	
-	InputPanel() {//method inputPanel start
+	InputPanel() {
 		setPreferredSize(new Dimension(300, 786));
 		setBackground(Color.GRAY);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -409,8 +313,8 @@ class InputPanel extends JPanel {//class InputPanel start
 		inputPanel3.add(applyTransformations, "cell 0 7, gapleft 40");
 
 
-	}//end inputpanel mathod
+	}
 
 
-}//end class inputpanel
+}
 
