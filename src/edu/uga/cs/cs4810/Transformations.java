@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class Transformations {
 	
 	private static int lineNumber;
+	private static boolean accept = false;
 	
 	public static double[][] BasicTranslate(int Tx, int Ty, int Tz) {
 		double[][] matrix = {{1,  0,  0,  0},
@@ -98,28 +99,28 @@ public class Transformations {
 		return image;
 	}
 	
-	private static int bitCode(int x, int y, int z) {
+	private static int bitCode(int x, int y) {
 		int code = 0;   
-		if(x<-z) code |= 1;
-		else if(x>z) code |= 2;
-		if(y>z) code |= 8;
-		else if(z<-z) code |= 4;
+		if(x<0) code |= 1;
+		else if(x>UserInput.getWidth()) code |= 2;
+		if(y<0) code |= 8;
+		else if(y>UserInput.getHeight()) code |= 4;
 		return code;
 	}
 	
-	private static double[] Clipping(int x1, int y1, int z1, int x2, int y2, int z2) {
+	private static double[] Clipping(int x1, int y1, int x2, int y2) {
 		double[] newValues = new double[4];
-		boolean accept = false;
+		boolean visible = false;
 		boolean done = false;
 		int x = 0, y = 0;
 		int code1, code2, codeOut;
 
-		code1 = bitCode(x1, y1, z1);
-		code2 = bitCode(x2, y2, z2);
+		code1 = bitCode(x1, y1);
+		code2 = bitCode(x2, y2);
 
 		do{
 			if((code1 | code2) == 0) {
-				accept = true;
+				visible = true;
 				done = true;
 			}
 			else if((code1 & code2) != 0) {
@@ -141,16 +142,20 @@ public class Transformations {
 				else if((codeOut & 1) != 0) {y = y1 + (y2 - y1)*(0 - x1)/(x2 - x1); x = 0;}
 
 				//Third Step
-				if(codeOut == code1) {x1 = x; y1 = y; code1 = bitCode(x1, y1, z1);}
-				else { x2 = x; y2 = y; code2 = bitCode(x2, y2, z2); }
+				if(codeOut == code1) {x1 = x; y1 = y; code1 = bitCode(x1, y1);}
+				else { x2 = x; y2 = y; code2 = bitCode(x2, y2); }
 			}
 		}while(done==false);
 		
-		if(accept == true) {
+		if(visible == true) {
+			setTrue();
 			newValues[0] = x1;
 			newValues[1] = y1;
 			newValues[2] = x2;
 			newValues[3] = y2;
+		}
+		else{
+			setFalse();
 		}
 		
 		return newValues;
@@ -169,34 +174,53 @@ public class Transformations {
 			scanner.nextLine();
 		}
 		
-		double[][] datalines = new double[number][3];
+		double[][] datalines = new double[number][6];
 		Scanner scanner2 = new Scanner(file);
 		while(scanner2.hasNextInt()) {
 				datalines[i][j] = scanner2.nextInt();
-				if(i==(number)) i=0;
-				if(j==2) {j=-1; i++;};
+				//if(i==(number)) i=0;
+				if(j==5) {j=-1; i++;};
 				j++;
 		}
 		setLineNumber(number);
 		return datalines;
 	}
 	
-public BufferedImage Displaypixel(double[][] datalines) {
+public static double[][] PerspectiveData(double[][] datalines) { 
+	double[][] perspectiveData = new double[getLineNumber()][4];
+	int Vsx = UserInput.getWidth()/2;
+	int Vsy = UserInput.getHeight()/2;
+	int Vcx = UserInput.getWidth()/2;
+	int Vcy = UserInput.getHeight()/2;
+	double D = UserInput.getDistance();
+	double S = UserInput.getSize();
+	
+	for(int i = 0; i<getLineNumber(); i++) {
+		perspectiveData[i][0] = ((D*datalines[i][0])/(S*datalines[i][2]))*Vsx+Vcx;
+		perspectiveData[i][1] = ((D*datalines[i][1])/(S*datalines[i][2]))*Vsx+Vcx;
+		perspectiveData[i][2] = ((D*datalines[i][3])/(S*datalines[i][5]))*Vsx+Vcx;
+		perspectiveData[i][3] = ((D*datalines[i][4])/(S*datalines[i][5]))*Vsx+Vcx; 
+	}
+	
+	return perspectiveData;
+}
+	
+public static BufferedImage Displaypixel(double[][] datalines) {
 		
 		BufferedImage image = new BufferedImage(0, 0, 0);
 		Color green = new Color(128, 255, 0); 
 		int rgb = green.getRGB();
-		
-		int dx, dy, E, ystep, x2, x1, y2, y1;
+		int x1, y1, x2, y2;
+		int dx, dy, E, ystep;
 		
 		//System.out.println("NUMBER OF LINES:   " + num );
 		for(int i=0; i<getLineNumber(); i++) {
-			
 			
 			x1 = (int) datalines[i][0];
 			y1 = (int) datalines[i][1];
 			x2 = (int) datalines[i][2];
 			y2 = (int) datalines[i][3];
+
 
 			boolean swap = Math.abs(y2-y1) > Math.abs(x2-x1);
 			if(swap) { //if slope is greater than or equal to 1
@@ -253,6 +277,18 @@ public static void setLineNumber(int number) {
 
 public static int getLineNumber() {
 	return lineNumber;
+}
+
+public static void setTrue() {
+	accept = true;
+}
+
+public static void setFalse() {
+	accept = false;
+}
+
+public static boolean getAccept() {
+	return accept;
 }
 	
 	
