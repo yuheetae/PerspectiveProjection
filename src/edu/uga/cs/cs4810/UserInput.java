@@ -2,9 +2,9 @@ package edu.uga.cs.cs4810;
 
 public class UserInput {
 	
-	private static int width, height, xLocation, yLocation, distance, size, translateX, translateY;
-	private static double scaleX, scaleY, rotateX, rotateY, rotateZ;
-	private static double[][] datalines;
+	private static int width, height, xLocation, yLocation, translateX, translateY;
+	private static double scaleX, scaleY, rotateX, rotateY, rotateZ, distance, size;
+	private static double[][] datalines, clippingData, PerspectiveData;
 	
 	public static void setDatalines(double[][] data) {
 		datalines = data;
@@ -27,11 +27,11 @@ public class UserInput {
 	}
 	
 	public static void setDistance(String d) {
-		distance = Integer.parseInt(d);
+		distance = Double.parseDouble(d);
 	}
 	
 	public static void setSize(String s) {
-		size = Integer.parseInt(s);
+		size = Double.parseDouble(s);
 	}
 	
 	public static void setTranslateX(String t) {
@@ -70,11 +70,11 @@ public class UserInput {
 		return height;
 	}
 	
-	public static int getDistance() {
+	public static double getDistance() {
 		return distance;
 	}
 	
-	public static int getSize() {
+	public static double getSize() {
 		return size;
 	}
 	

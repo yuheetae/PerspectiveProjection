@@ -63,6 +63,15 @@ public class Transformations {
 		return matrix;
 	}
 	
+	public static double[][] ClippingMatrix(double D, double S) {
+		double x = D/S;
+		double[][] N = {{x, 0, 0, 0}, 
+				 		{0, x, 0, 0}, 
+				 		{0, 0, 1, 0},
+				 		{0, 0, 0, 1}};
+		return N;
+	}
+	
 	public static double[][] Concatenate(double[][] matrix1, double[][] matrix2) {
 		double[][] product = new double[4][4];
 
@@ -89,6 +98,64 @@ public class Transformations {
 		return image;
 	}
 	
+	private static int bitCode(int x, int y, int z) {
+		int code = 0;   
+		if(x<-z) code |= 1;
+		else if(x>z) code |= 2;
+		if(y>z) code |= 8;
+		else if(z<-z) code |= 4;
+		return code;
+	}
+	
+	private static double[] Clipping(int x1, int y1, int z1, int x2, int y2, int z2) {
+		double[] newValues = new double[4];
+		boolean accept = false;
+		boolean done = false;
+		int x = 0, y = 0;
+		int code1, code2, codeOut;
+
+		code1 = bitCode(x1, y1, z1);
+		code2 = bitCode(x2, y2, z2);
+
+		do{
+			if((code1 | code2) == 0) {
+				accept = true;
+				done = true;
+			}
+			else if((code1 & code2) != 0) {
+				done = true;
+			}
+			else {
+				//First Step
+				if(code1 != 0) {
+					codeOut = code1;
+				}
+				else {
+					codeOut = code2;
+				}
+
+				//Second Step
+				if((codeOut & 8) != 0) {x = x1 + (x2 - x1)*(0 - y1)/(y2 - y1); y = 0;}
+				else if((codeOut & 4) != 0) { x = x1 + (x2 - x1)*(UserInput.getHeight() - y1)/(y2 - y1); y = UserInput.getHeight(); }
+				else if((codeOut & 2) != 0) {y = y1 + (y2 - y1)*(UserInput.getWidth() - x1)/(x2 - x1); x = UserInput.getWidth();}
+				else if((codeOut & 1) != 0) {y = y1 + (y2 - y1)*(0 - x1)/(x2 - x1); x = 0;}
+
+				//Third Step
+				if(codeOut == code1) {x1 = x; y1 = y; code1 = bitCode(x1, y1, z1);}
+				else { x2 = x; y2 = y; code2 = bitCode(x2, y2, z2); }
+			}
+		}while(done==false);
+		
+		if(accept == true) {
+			newValues[0] = x1;
+			newValues[1] = y1;
+			newValues[2] = x2;
+			newValues[3] = y2;
+		}
+		
+		return newValues;
+	}
+	
 	public static double[][] Inputlines(String data) throws FileNotFoundException {
 		
 		int i=0;
@@ -102,12 +169,12 @@ public class Transformations {
 			scanner.nextLine();
 		}
 		
-		double[][] datalines = new double[number][4];
+		double[][] datalines = new double[number][3];
 		Scanner scanner2 = new Scanner(file);
 		while(scanner2.hasNextInt()) {
 				datalines[i][j] = scanner2.nextInt();
 				if(i==(number)) i=0;
-				if(j==3) {j=-1; i++;};
+				if(j==2) {j=-1; i++;};
 				j++;
 		}
 		setLineNumber(number);
