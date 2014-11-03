@@ -4,11 +4,32 @@ public class UserInput {
 	
 	private static int width, height, xLocation, yLocation, translateX, translateY;
 	private static double scaleX, scaleY, rotateX, rotateY, rotateZ, distance, size;
-	private static double[][] datalines, clippingData, PerspectiveData;
+	private static double[][] worldCoordinateData, eyeCoordinateData, perspectiveData;
 	
-	public static void setDatalines(double[][] data) {
-		datalines = data;
+	public static void setPerspectiveData(double[][] data) {
+		perspectiveData = data;
 	}
+	
+	public static double[][] getPerspectiveData() {
+		return perspectiveData;
+	}
+	
+	public static void setWorldData(double[][] data) {
+		worldCoordinateData = data;
+	}
+	
+	public static double[][] getWorldData() {
+		return worldCoordinateData;
+	}
+	
+	public static void setEyeData(double[][] data) {
+		eyeCoordinateData = data;
+	}
+	
+	public static double[][] getEyeData() {
+		return eyeCoordinateData;
+	}
+	
 	
 	public static void setWidth(String w) {
 		width = Integer.parseInt(w);

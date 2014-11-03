@@ -54,13 +54,23 @@ public class PerspectiveProjection extends JFrame{
 
 class PaintPanel extends JPanel {
 	private boolean clicked = false;
-
+	private boolean clicked2 = false;
+	
 	PaintPanel() {
 		setLayout(new BorderLayout());
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setPreferredSize(screenSize);
 		add(new InputPanel(), BorderLayout.LINE_START);
 		
+		InputPanel.drawLines.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				clicked2 = true;
+				repaint();
+			}
+		});	
 		
 		InputPanel.createViewport.addActionListener(new ActionListener()
 		{
@@ -87,13 +97,24 @@ class PaintPanel extends JPanel {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					String data = fc.getSelectedFile().getAbsolutePath();
 					try {
-						UserInput.setDatalines(Transformations.Inputlines(data));
+						UserInput.setWorldData(Transformations.Inputlines(data));
 					} catch (FileNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 
 					}
 				}
+			}
+		});
+		
+		InputPanel.setViewpoint.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				UserInput.setDistance(InputPanel.distanceField.getText());
+				UserInput.setDistance(InputPanel.sizeField.getText());
+
 			}
 		});
 
@@ -136,12 +157,12 @@ class PaintPanel extends JPanel {
 			super.paintComponent(g);
 			double[][] data;
 			BufferedImage viewport = Transformations.ViewportSpec(UserInput.getWidth(), UserInput.getHeight());
-			/*
+			
 			if(clicked2==true) {
-			data = datalines; 
-			viewport = image.Displaypixel(data);
+			
+			viewport = Transformations.Displaypixel(UserInput.getWorldData());
 			}
-			 */
+			 
 			g.drawImage(viewport, UserInput.getXLocation(), UserInput.getYLocation(), this);
 		}
 	}
@@ -170,6 +191,16 @@ class InputPanel extends JPanel {
 	static JLabel distance = new JLabel("D:");
 	static JLabel size = new JLabel("S:");
 	static JButton setDisplay = new JButton("Set Display");
+	
+	static JLabel viewpoint = new JLabel("Viewpoint Coordinates");
+	static JLabel viewpointX = new JLabel("x:");
+	static JTextField xPointField = new JTextField(40);
+	static JLabel viewpointY = new JLabel("y:");
+	static JTextField yPointField = new JTextField(40);
+	static JLabel viewpointZ = new JLabel("z:");
+	static JTextField zPointField = new JTextField(40);
+	static JButton setViewpoint = new JButton("Set Viewpoint");
+	
 	static JTextField distanceField = new JTextField(40);
 	static JTextField sizeField = new JTextField(40);
 	static JLabel translate = new JLabel("Translate:");
@@ -195,34 +226,42 @@ class InputPanel extends JPanel {
 	static JTextField rotateZField = new JTextField(40); 
 	static JButton applyTransformations = new JButton("Apply Transformations");
 	private boolean clicked = false;
+	private boolean clicked2 = false;
 	
 	InputPanel() {
 		setPreferredSize(new Dimension(300, 786));
 		setBackground(Color.GRAY);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JPanel inputPanel = new JPanel();
-		inputPanel.setPreferredSize(new Dimension(300, 170));
+		inputPanel.setPreferredSize(new Dimension(300, 150));
 		inputPanel.setBackground(Color.GRAY);
 
 		JPanel inputPanel2 = new JPanel();
-		inputPanel2.setPreferredSize(new Dimension(300, 200));
+		inputPanel2.setPreferredSize(new Dimension(300, 130));
 		inputPanel2.setBackground(Color.GRAY);
-
+		
 		JPanel inputPanel3 = new JPanel();
-		inputPanel3.setPreferredSize(new Dimension(300, 300));
+		inputPanel3.setPreferredSize(new Dimension(300, 80));
 		inputPanel3.setBackground(Color.GRAY);
+
+		JPanel inputPanel4 = new JPanel();
+		inputPanel4.setPreferredSize(new Dimension(300, 280));
+		inputPanel4.setBackground(Color.GRAY);
 
 		inputPanel.setAlignmentX( Component.LEFT_ALIGNMENT );
 		inputPanel2.setAlignmentX( Component.LEFT_ALIGNMENT );
 		inputPanel3.setAlignmentX( Component.LEFT_ALIGNMENT );
+		inputPanel4.setAlignmentX( Component.LEFT_ALIGNMENT );
 
 		this.add(inputPanel);
 		this.add(inputPanel2);
 		this.add(inputPanel3);
+		this.add(inputPanel4);
 
 		Font bold = new Font(defaultFont.getFontName(), Font.BOLD, defaultFont.getSize());
 		viewportSize.setFont(bold);
 		viewportLocation.setFont(bold);
+		viewpoint.setFont(bold);
 		display.setFont(bold);
 		translate.setFont(bold);
 		scale.setFont(bold);
@@ -239,18 +278,24 @@ class InputPanel extends JPanel {
 		MigLayout mig2 = new MigLayout(
 				"",
 				"57[80:80:80]20[80:80:80]0",
-				"[][]15[]30[][]15[]30[][][]"
+				"[]30[][]10[]"
 				);
 		inputPanel2.setLayout(mig2);
-
 
 		MigLayout mig3 = new MigLayout(
 				"",
 				"23[80:80:80][80:80:80][80:80:80]",
-				"[][]10[][]10[][]20[]"
+				"[][]10[]30[]"
+				);
+		inputPanel3.setLayout(mig3);
+
+		MigLayout mig4 = new MigLayout(
+				"",
+				"23[80:80:80][80:80:80][80:80:80]",
+				"[]20[][]10[][]10[][]30[]"
 				);
 
-		inputPanel3.setLayout(mig3);
+		inputPanel4.setLayout(mig4);
 
 
 		inputPanel.add(open, "cell 0 0, gapleft 85");
@@ -272,45 +317,56 @@ class InputPanel extends JPanel {
 		inputPanel.add(y);
 		inputPanel.add(yLocation);
 
-		inputPanel2.add(createViewport, "cell 0 1, width 150:150:150, gapleft 20");
+		inputPanel2.add(createViewport, "cell 0 0, width 150:150:150, gapleft 20");
 
-		inputPanel2.add(drawLines, "cell 0 2, width 150:150:150, gapleft 20");
-
-		inputPanel2.add(display, "cell 0 3");
-		inputPanel2.add(distance, "cell 0 4, split 2");
+		inputPanel2.add(display, "cell 0 1, gapleft 15");
+		inputPanel2.add(distance, "cell 0 2, split 2");
 		inputPanel2.add(distanceField);
-		inputPanel2.add(size, "cell 1 4, split 2");
+		inputPanel2.add(size, "cell 1 2, split 2");
 		inputPanel2.add(sizeField); 
-		inputPanel2.add(setDisplay, "cell 0 5, gapleft 37");
+		inputPanel2.add(setDisplay, "cell 0 3, gapleft 37");
+		
+		inputPanel3.add(viewpoint, "cell 0 0, gapleft 50");
+		inputPanel3.add(viewpointX, "cell 0 1, split 2");
+		inputPanel3.add(xPointField);
+		inputPanel3.add(viewpointY, "cell 1 1, split 2");
+		inputPanel3.add(yPointField);
+		inputPanel3.add(viewpointZ, "cell 2 1, split 2");
+		inputPanel3.add(zPointField);
+		inputPanel3.add(setViewpoint, "cell 0 2, gapleft 60");
+		
+		
+		
+		inputPanel4.add(drawLines, "cell 0 0, width 150:150:150, gapleft 50");
 
 
-		inputPanel3.add(translate, "cell 0 0");
-		inputPanel3.add(translateX, "cell 0 1, split 2");
-		inputPanel3.add(translateXField);
-		inputPanel3.add(translateY, "cell 1 1, split 2");
-		inputPanel3.add(translateYField);
-		inputPanel3.add(translateZ, "cell 2 1, split 2");
-		inputPanel3.add(translateZField);
+		inputPanel4.add(translate, "cell 0 1");
+		inputPanel4.add(translateX, "cell 0 2, split 2");
+		inputPanel4.add(translateXField);
+		inputPanel4.add(translateY, "cell 1 2, split 2");
+		inputPanel4.add(translateYField);
+		inputPanel4.add(translateZ, "cell 2 2, split 2");
+		inputPanel4.add(translateZField);
 
 
-		inputPanel3.add(scale, "cell 0 2");
-		inputPanel3.add(scaleX, "cell 0 3, split 2");
-		inputPanel3.add(scaleXField);
-		inputPanel3.add(scaleY, "cell 1 3, split 2");
-		inputPanel3.add(scaleYField);
-		inputPanel3.add(scaleZ, "cell 2 3, split 2");
-		inputPanel3.add(scaleZField);
+		inputPanel4.add(scale, "cell 0 3");
+		inputPanel4.add(scaleX, "cell 0 4, split 2");
+		inputPanel4.add(scaleXField);
+		inputPanel4.add(scaleY, "cell 1 4, split 2");
+		inputPanel4.add(scaleYField);
+		inputPanel4.add(scaleZ, "cell 2 4, split 2");
+		inputPanel4.add(scaleZField);
 
 
 
-		inputPanel3.add(rotate, "cell 0 4");
-		inputPanel3.add(rotateX, "cell 0 5, split 2");
-		inputPanel3.add(rotateXField);
-		inputPanel3.add(rotateY, "cell 1 5, split 2");
-		inputPanel3.add(rotateYField);
-		inputPanel3.add(rotateZ, "cell 2 5, split 2");
-		inputPanel3.add(rotateZField);
-		inputPanel3.add(applyTransformations, "cell 0 7, gapleft 40");
+		inputPanel4.add(rotate, "cell 0 5");
+		inputPanel4.add(rotateX, "cell 0 6, split 2");
+		inputPanel4.add(rotateXField);
+		inputPanel4.add(rotateY, "cell 1 6, split 2");
+		inputPanel4.add(rotateYField);
+		inputPanel4.add(rotateZ, "cell 2 6, split 2");
+		inputPanel4.add(rotateZField);
+		inputPanel4.add(applyTransformations, "cell 0 7, gapleft 40");
 
 
 	}

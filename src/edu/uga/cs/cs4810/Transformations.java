@@ -12,7 +12,7 @@ public class Transformations {
 	private static int lineNumber;
 	private static boolean accept = false;
 	
-	public static double[][] BasicTranslate(int Tx, int Ty, int Tz) {
+	public static double[][] BasicTranslate(double Tx, double Ty, double Tz) {
 		double[][] matrix = {{1,  0,  0,  0},
 							 {0,  1,  0,  0},
 							 {0,  0,  1,  0},
@@ -64,13 +64,29 @@ public class Transformations {
 		return matrix;
 	}
 	
-	public static double[][] ClippingMatrix(double D, double S) {
-		double x = D/S;
-		double[][] N = {{x, 0, 0, 0}, 
-				 		{0, x, 0, 0}, 
-				 		{0, 0, 1, 0},
-				 		{0, 0, 0, 1}};
-		return N;
+	public static double[][] WorldToEye(double x, double y, double z) {
+		double[][] t1 = BasicTranslate(x, y, z);
+		double[][] t2 = BasicXRotate(-90);
+		double cos = y/Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));
+		double sin = x/Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));
+		double[][] t3 = {{-cos, 0,  sin, 0},
+						 {  0,  1,   0,  0},	
+						 {-sin, 0, -cos, 0},
+						 {  0,  0,   0,  1}};
+		double cos2 = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))/Math.sqrt(Math.pow(z, 2) + Math.pow(x, 2) + Math.pow(y, 2));
+		double sin2 = z/Math.sqrt(Math.pow(z, 2) + Math.pow(x, 2) + Math.pow(y, 2));
+		double[][] t4 = {{1,   0,    0,   0},
+				 		 {0,  cos2, sin2, 0},	
+				 		 {0, -sin2, cos2, 0},
+				 		 {0,   0,    0,   1}};
+		
+		double[][] t5 = {{1,  0,  0,  0},
+						 {0,  1,  0,  0},
+						 {0,  0, -1,  0},
+						 {0,  0,  0,  0}};
+		
+		double[][] result = Concatenate(Concatenate(Concatenate(Concatenate(t1, t2), t3), t4), t5);
+		return result;
 	}
 	
 	public static double[][] Concatenate(double[][] matrix1, double[][] matrix2) {
@@ -186,7 +202,7 @@ public class Transformations {
 		return datalines;
 	}
 	
-public static double[][] PerspectiveData(double[][] datalines) { 
+public static void PerspectiveData(double[][] datalines) { 
 	double[][] perspectiveData = new double[getLineNumber()][4];
 	int Vsx = UserInput.getWidth()/2;
 	int Vsy = UserInput.getHeight()/2;
@@ -202,10 +218,13 @@ public static double[][] PerspectiveData(double[][] datalines) {
 		perspectiveData[i][3] = ((D*datalines[i][4])/(S*datalines[i][5]))*Vsx+Vcx; 
 	}
 	
-	return perspectiveData;
+	UserInput.setPerspectiveData(perspectiveData);
 }
 	
 public static BufferedImage Displaypixel(double[][] datalines) {
+	
+		PerspectiveData(datalines);
+		double[][] array = UserInput.getPerspectiveData();
 		
 		BufferedImage image = new BufferedImage(0, 0, 0);
 		Color green = new Color(128, 255, 0); 
@@ -216,10 +235,10 @@ public static BufferedImage Displaypixel(double[][] datalines) {
 		//System.out.println("NUMBER OF LINES:   " + num );
 		for(int i=0; i<getLineNumber(); i++) {
 			
-			x1 = (int) datalines[i][0];
-			y1 = (int) datalines[i][1];
-			x2 = (int) datalines[i][2];
-			y2 = (int) datalines[i][3];
+			x1 = (int) array[i][0];
+			y1 = (int) array[i][1];
+			x2 = (int) array[i][2];
+			y2 = (int) array[i][3];
 
 
 			boolean swap = Math.abs(y2-y1) > Math.abs(x2-x1);
