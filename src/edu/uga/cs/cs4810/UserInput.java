@@ -3,8 +3,31 @@ package edu.uga.cs.cs4810;
 public class UserInput {
 	
 	private static int width, height, xLocation, yLocation, translateX, translateY;
-	private static double scaleX, scaleY, rotateX, rotateY, rotateZ, distance, size;
+	private static double scaleX, scaleY, rotateX, rotateY, rotateZ, distance, size, viewpointX, viewpointY, viewpointZ;
 	private static double[][] worldCoordinateData, eyeCoordinateData, perspectiveData;
+	
+	public static void setViewpointX(String x) {
+		viewpointX = Double.parseDouble(x);
+	}
+	
+	public static double getViewpointX() {
+			return viewpointX;
+	}
+	public static void setViewpointY(String y) {
+		viewpointY = Double.parseDouble(y);
+	}
+	
+	public static double getViewpointY() {
+			return viewpointY;
+	}
+	
+	public static void setViewpointZ(String z) {
+		viewpointZ = Double.parseDouble(z);
+	}
+	
+	public static double getViewpointZ() {
+			return viewpointZ;
+	}
 	
 	public static void setPerspectiveData(double[][] data) {
 		perspectiveData = data;

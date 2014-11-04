@@ -64,7 +64,7 @@ public class Transformations {
 		return matrix;
 	}
 	
-	public static double[][] WorldToEye(double x, double y, double z) {
+	public static double[][] WorldToEye(double[][] datalines, double x, double y, double z) {
 		double[][] t1 = BasicTranslate(x, y, z);
 		double[][] t2 = BasicXRotate(-90);
 		double cos = y/Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));
@@ -102,6 +102,15 @@ public class Transformations {
 			}
 			return product;
 		}
+	
+	public static void ApplyTransformations(double[][] datalines, double[][] matrix) {
+		for(int i = 0; i<getLineNumber(); i++) {
+			datalines[i][0] = datalines[i][0]*matrix[0][0] + datalines[i][1]*matrix[1][0] + datalines[i][2]*matrix[2][0] + matrix[3][0];
+			datalines[i][1] = datalines[i][0]*matrix[0][1] + datalines[i][1]*matrix[1][1] + datalines[i][2]*matrix[2][1] + matrix[3][1];
+			datalines[i][2] = datalines[i][0]*matrix[0][2] + datalines[i][1]*matrix[1][2] + datalines[i][2]*matrix[2][2] + matrix[3][2];
+			datalines[i][3] = datalines[i][0]*matrix[0][3] + datalines[i][1]*matrix[1][3] + datalines[i][2]*matrix[2][3] + matrix[3][3];
+		}
+	}
 	
 	public static BufferedImage ViewportSpec(int width, int height) {
 		Color black = new Color(0,0,0);

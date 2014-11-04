@@ -112,9 +112,13 @@ class PaintPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				UserInput.setDistance(InputPanel.distanceField.getText());
-				UserInput.setDistance(InputPanel.sizeField.getText());
-
+				UserInput.setViewpointX(InputPanel.xPointField.getText());
+				UserInput.setViewpointY(InputPanel.yPointField.getText());
+				UserInput.setViewpointZ(InputPanel.zPointField.getText());
+				double[][] data = Transformations.WorldToEye(UserInput.getWorldData(), UserInput.getViewpointX(), 
+																					   UserInput.getViewpointY(), 
+																					   UserInput.getViewpointX());
+				UserInput.setEyeData(data);
 			}
 		});
 
