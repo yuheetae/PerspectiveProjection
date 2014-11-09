@@ -63,7 +63,7 @@ public class UserInput {
 	}
 	
 	public static void setXLocation(String x) {
-		xLocation = Integer.parseInt(x);
+		xLocation = Integer.parseInt(x) + 300;
 	}
 	
 	public static void setYLocation(String y) {

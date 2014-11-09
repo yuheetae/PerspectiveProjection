@@ -60,9 +60,9 @@ public class Transformations {
 		double cos = Math.round(Math.cos(theta)*100000)/100000;
 		double sin =  Math.round(Math.sin(theta)*100000)/100000;
 		double[][] matrix = {{1,   0,   0,  0}, 
-				{0,  cos, sin, 0}, 
-				{0, -sin, cos, 0},
-				{0,   0,   0,  1}};
+							 {0,  cos, sin, 0}, 
+							 {0, -sin, cos, 0},
+							 {0,   0,   0,  1}};
 		return matrix;
 	}
 
@@ -81,6 +81,29 @@ public class Transformations {
 		
 		
 		return product;
+	}
+	
+	public static double[][] ApplyTransformation(double[][] worldData, double[][] transformMatrix) {
+		
+		double[][] result = transformMatrix;
+		
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
+				result[i][j] = Math.floor(result[i][j]*100000)/100000;
+			}
+		}
+
+		double[][]eyeData = new double[getLineNumber()][6];
+		for(int i = 0; i<getLineNumber(); i++) {
+			eyeData[i][0] = worldData[i][0]*result[0][0] + worldData[i][1]*result[1][0] + worldData[i][2]*result[2][0] + result[3][0];
+			eyeData[i][1] = worldData[i][0]*result[0][1] + worldData[i][1]*result[1][1] + worldData[i][2]*result[2][1] + result[3][1];
+			eyeData[i][2] = worldData[i][0]*result[0][2] + worldData[i][1]*result[1][2] + worldData[i][2]*result[2][2] + result[3][2];
+			eyeData[i][3] = worldData[i][3]*result[0][0] + worldData[i][4]*result[1][0] + worldData[i][5]*result[2][0] + result[3][0];
+			eyeData[i][4] = worldData[i][3]*result[0][1] + worldData[i][4]*result[1][1] + worldData[i][5]*result[2][1] + result[3][1];
+			eyeData[i][5] = worldData[i][3]*result[0][2] + worldData[i][4]*result[1][2] + worldData[i][5]*result[2][2] + result[3][2];
+		}
+		//System.out.println(Arrays.deepToString(eyeData));
+		return eyeData;
 	}
 
 	//Coordinate Conversions
@@ -142,9 +165,6 @@ public class Transformations {
 		double Vsy = UserInput.getHeight()/2;
 		double Vcx = UserInput.getWidth()/2;
 		double Vcy = UserInput.getHeight()/2;
-		System.out.println("D:  " + D + "   S:  " + S);
-		System.out.println("Vsx:  " + Vsx + "   Vsy:  " + Vsy);
-		System.out.println("Vcx:  " + Vcx + "   Vcy:  " + Vcy);
 		for(int i = 0; i<getLineNumber(); i++) {
 			perspectiveData[i][0] = (D*eyeData[i][0])/(S*eyeData[i][2])*Vsx+Vcx;
 			perspectiveData[i][1] = (D*eyeData[i][1])/(S*eyeData[i][2])*Vcy+Vcy;
@@ -173,7 +193,7 @@ public class Transformations {
 		if(x<0) code |= 1;
 		else if(x>UserInput.getWidth()) code |= 2;
 		if(y<0) code |= 8;
-		else if(y>UserInput.getHeight()) code |= 4;
+		else if(y>(UserInput.getHeight()-1)) code |= 4;
 		return code;
 	}
 	
@@ -206,8 +226,8 @@ public class Transformations {
 
 				//Second Step
 				if((codeOut & 8) != 0) {x = x1 + (x2 - x1)*(0 - y1)/(y2 - y1); y = 0;}
-				else if((codeOut & 4) != 0) { x = x1 + (x2 - x1)*(UserInput.getHeight() - y1)/(y2 - y1); y = UserInput.getHeight(); }
-				else if((codeOut & 2) != 0) {y = y1 + (y2 - y1)*(UserInput.getWidth() - x1)/(x2 - x1); x = UserInput.getWidth();}
+				else if((codeOut & 4) != 0) { x = x1 + (x2 - x1)*(UserInput.getHeight() - y1)/(y2 - y1); y = (UserInput.getHeight()-1); }
+				else if((codeOut & 2) != 0) {y = y1 + (y2 - y1)*(UserInput.getWidth() - x1)/(x2 - x1); x = (UserInput.getWidth()-1);}
 				else if((codeOut & 1) != 0) {y = y1 + (y2 - y1)*(0 - x1)/(x2 - x1); x = 0;}
 
 				//Third Step
@@ -260,6 +280,7 @@ public static BufferedImage Displaypixel(double[][] datalines) {
 	
 		//PerspectiveData(datalines);
 		double[][] array = UserInput.getPerspectiveData();
+		double[] clippingArray;
 		
 		BufferedImage image = new BufferedImage(UserInput.getWidth(), UserInput.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
@@ -283,7 +304,17 @@ public static BufferedImage Displaypixel(double[][] datalines) {
 			y1 = (int) array[i][1];
 			x2 = (int) array[i][2];
 			y2 = (int) array[i][3];
+			
+			clippingArray = Clipping(x1, y1, x2, y2);
+			boolean acceptValue = getAccept();
+			if(acceptValue == false) {
+				continue;
+			}
 
+			x1 = (int) clippingArray[0];
+			y1 = (int) clippingArray[1];
+			x2 = (int) clippingArray[2];
+			y2 = (int) clippingArray[3];
 
 			boolean swap = Math.abs(y2-y1) > Math.abs(x2-x1);
 			if(swap) { //if slope is greater than or equal to 1

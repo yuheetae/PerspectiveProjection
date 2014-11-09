@@ -157,6 +157,13 @@ class PaintPanel extends JPanel {
 
 				double[][] concat = Transformations.Concatenate(Transformations.Concatenate(translate, scale), rotateZ);
 				double[][] transformation = Transformations.Concatenate(Transformations.Concatenate(concat, rotateY), rotateX);	
+				
+				double[][] eyeData = Transformations.ApplyTransformation(UserInput.getEyeData(), transformation);
+				UserInput.setEyeData(eyeData);
+				
+				UserInput.setPerspectiveData(Transformations.EyeToPerspective(UserInput.getEyeData()));
+				clicked2 = true;
+				repaint();
 
 			}
 		});
@@ -179,7 +186,7 @@ class PaintPanel extends JPanel {
 		}
 	}
 	
-}
+} 
 
 
 
