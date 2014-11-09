@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -67,6 +68,9 @@ class PaintPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				UserInput.setPerspectiveData(Transformations.EyeToPerspective(UserInput.getEyeData()));
+				//System.out.println(Arrays.deepToString(UserInput.getEyeData()));
+				System.out.println(Arrays.deepToString(UserInput.getPerspectiveData()));
 				clicked2 = true;
 				repaint();
 			}
@@ -81,7 +85,7 @@ class PaintPanel extends JPanel {
 				UserInput.setHeight(InputPanel.viewportHeight.getText());
 				UserInput.setXLocation(InputPanel.xLocation.getText());
 				UserInput.setYLocation(InputPanel.yLocation.getText()); 
-				System.out.println(UserInput.getWidth() + "   " +UserInput.getHeight()+ "   " +UserInput.getXLocation()+ "   " + UserInput.getYLocation());
+				//System.out.println(UserInput.getWidth() + "   " +UserInput.getHeight()+ "   " +UserInput.getXLocation()+ "   " + UserInput.getYLocation());
 				clicked = true;
 				repaint();
 			}
@@ -105,6 +109,7 @@ class PaintPanel extends JPanel {
 					}
 				}
 			}
+			
 		});
 		
 		InputPanel.setViewpoint.addActionListener(new ActionListener()
@@ -115,10 +120,13 @@ class PaintPanel extends JPanel {
 				UserInput.setViewpointX(InputPanel.xPointField.getText());
 				UserInput.setViewpointY(InputPanel.yPointField.getText());
 				UserInput.setViewpointZ(InputPanel.zPointField.getText());
-				double[][] data = Transformations.WorldToEye(UserInput.getWorldData(), UserInput.getViewpointX(), 
+				double[][] transformationMatrix = Transformations.WorldToEye(UserInput.getWorldData(), UserInput.getViewpointX(), 
 																					   UserInput.getViewpointY(), 
-																					   UserInput.getViewpointX());
-				UserInput.setEyeData(data);
+																					   UserInput.getViewpointZ());
+				
+				//double[][] eyeMatrix = Transformations.ApplyTransformations(UserInput.getWorldData(), transformationMatrix);
+				UserInput.setEyeData(transformationMatrix);
+				//System.out.println(Arrays.deepToString(UserInput.getEyeData()));
 			}
 		});
 
@@ -128,7 +136,7 @@ class PaintPanel extends JPanel {
 			public void actionPerformed(ActionEvent e)
 			{
 				UserInput.setDistance(InputPanel.distanceField.getText());
-				UserInput.setDistance(InputPanel.sizeField.getText());
+				UserInput.setSize(InputPanel.sizeField.getText());
 
 			}
 		});
@@ -164,7 +172,7 @@ class PaintPanel extends JPanel {
 			
 			if(clicked2==true) {
 			
-			viewport = Transformations.Displaypixel(UserInput.getWorldData());
+			viewport = Transformations.Displaypixel(UserInput.getPerspectiveData());
 			}
 			 
 			g.drawImage(viewport, UserInput.getXLocation(), UserInput.getYLocation(), this);

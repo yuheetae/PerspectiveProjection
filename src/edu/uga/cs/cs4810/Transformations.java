@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -12,11 +13,12 @@ public class Transformations {
 	private static int lineNumber;
 	private static boolean accept = false;
 	
+////Transformations/////////////
 	public static double[][] BasicTranslate(double Tx, double Ty, double Tz) {
 		double[][] matrix = {{1,  0,  0,  0},
 							 {0,  1,  0,  0},
 							 {0,  0,  1,  0},
-							 {Tx, Ty, Tz, 0}};
+							 {Tx, Ty, Tz, 1}};
 		return matrix;
 	}
 	
@@ -33,8 +35,8 @@ public class Transformations {
 	
 	public static double[][] BasicZRotate(double angle) {
 		double theta = Math.toRadians(angle);
-		double cos = Math.cos(theta);
-		double sin =  Math.sin(theta);
+		double cos = Math.round(Math.cos(theta)*100000)/100000;
+		double sin =  Math.round(Math.sin(theta)*100000)/100000;
 		double[][] matrix = {{ cos,  sin, 0, 0}, 
 							 {-sin,  cos, 0, 0}, 
 							 {  0,    0,  1, 0},
@@ -44,28 +46,46 @@ public class Transformations {
 	
 	public static double[][] BasicYRotate(double angle) {
 		double theta = Math.toRadians(angle);
-		double cos = Math.cos(theta);
-		double sin =  Math.sin(theta);
+		double cos = Math.round(Math.cos(theta)*100000)/100000;
+		double sin =  Math.round(Math.sin(theta)*100000)/100000;
 		double[][] matrix = {{cos, 0, -sin, 0}, 
 							 { 0,  1,   0,  0}, 
 							 {sin, 0,  cos, 0},
-						   	 { 0,  0,   0,  1}};
+							 { 0,  0,   0,  1}};
 		return matrix;
 	}
-	
+
 	public static double[][] BasicXRotate(double angle) {
 		double theta = Math.toRadians(angle);
-		double cos = Math.cos(theta);
-		double sin =  Math.sin(theta);
+		double cos = Math.round(Math.cos(theta)*100000)/100000;
+		double sin =  Math.round(Math.sin(theta)*100000)/100000;
 		double[][] matrix = {{1,   0,   0,  0}, 
-							 {0,  cos, sin, 0}, 
-							 {0, -sin, cos, 0},
-						   	 {0,   0,   0,  1}};
+				{0,  cos, sin, 0}, 
+				{0, -sin, cos, 0},
+				{0,   0,   0,  1}};
 		return matrix;
 	}
-	
-	public static double[][] WorldToEye(double[][] datalines, double x, double y, double z) {
-		double[][] t1 = BasicTranslate(x, y, z);
+
+	//////Concatenate Two Matrices
+	public static double[][] Concatenate(double[][] matrix1, double[][] matrix2) {
+		double[][] product = new double[4][4];
+
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
+				for(int k = 0; k < 4; k++) {
+					product[i][j] += matrix1[i][k]*matrix2[k][j]; 
+				}
+
+			}
+		}
+		
+		
+		return product;
+	}
+
+	//Coordinate Conversions
+	public static double[][] WorldToEye(double[][] worldData, double x, double y, double z) {
+		double[][] t1 = BasicTranslate(-x, -y, -z);
 		double[][] t2 = BasicXRotate(-90);
 		double cos = y/Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));
 		double sin = x/Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));
@@ -83,35 +103,59 @@ public class Transformations {
 		double[][] t5 = {{1,  0,  0,  0},
 						 {0,  1,  0,  0},
 						 {0,  0, -1,  0},
-						 {0,  0,  0,  0}};
+						 {0,  0,  0,  1}};
 		
 		double[][] result = Concatenate(Concatenate(Concatenate(Concatenate(t1, t2), t3), t4), t5);
-		return result;
-	}
-	
-	public static double[][] Concatenate(double[][] matrix1, double[][] matrix2) {
-		double[][] product = new double[4][4];
-
-			for(int i = 0; i < 4; i++) {
-				for(int j = 0; j < 4; j++) {
-					for(int k = 0; k < 4; k++) {
-						product[i][j] += matrix1[i][k]*matrix2[k][j]; 
-					}
-						
-				}
+		
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
+				result[i][j] = Math.floor(result[i][j]*100000)/100000;
 			}
-			return product;
 		}
-	
-	public static void ApplyTransformations(double[][] datalines, double[][] matrix) {
+
+		/*
+		System.out.println("T1:\n" + Arrays.deepToString(t1) + "\nT2:\n" + Arrays.deepToString(t2)+ "\nT3:\n" + Arrays.deepToString(t3)
+				+ "\nT4:\n" + Arrays.deepToString(t4)+ "\nT5:\n" + Arrays.deepToString(t5));
+		
+		System.out.println("T1*T2:\n" + Arrays.deepToString(Concatenate(t1, t2)) + "\nT1*T2 * T3:\n" + Arrays.deepToString(Concatenate(Concatenate(t1, t2), t3))
+				+ "\nT1*T2*T3 * T4:\n" + Arrays.deepToString(Concatenate(Concatenate(Concatenate(t1, t2), t3), t4)) + "\nT1*T2*T3*T4 * T5:\n" + Arrays.deepToString(result));
+		*/
+		
+		double[][]eyeData = new double[getLineNumber()][6];
 		for(int i = 0; i<getLineNumber(); i++) {
-			datalines[i][0] = datalines[i][0]*matrix[0][0] + datalines[i][1]*matrix[1][0] + datalines[i][2]*matrix[2][0] + matrix[3][0];
-			datalines[i][1] = datalines[i][0]*matrix[0][1] + datalines[i][1]*matrix[1][1] + datalines[i][2]*matrix[2][1] + matrix[3][1];
-			datalines[i][2] = datalines[i][0]*matrix[0][2] + datalines[i][1]*matrix[1][2] + datalines[i][2]*matrix[2][2] + matrix[3][2];
-			datalines[i][3] = datalines[i][0]*matrix[0][3] + datalines[i][1]*matrix[1][3] + datalines[i][2]*matrix[2][3] + matrix[3][3];
+			eyeData[i][0] = worldData[i][0]*result[0][0] + worldData[i][1]*result[1][0] + worldData[i][2]*result[2][0] + result[3][0];
+			eyeData[i][1] = worldData[i][0]*result[0][1] + worldData[i][1]*result[1][1] + worldData[i][2]*result[2][1] + result[3][1];
+			eyeData[i][2] = worldData[i][0]*result[0][2] + worldData[i][1]*result[1][2] + worldData[i][2]*result[2][2] + result[3][2];
+			eyeData[i][3] = worldData[i][3]*result[0][0] + worldData[i][4]*result[1][0] + worldData[i][5]*result[2][0] + result[3][0];
+			eyeData[i][4] = worldData[i][3]*result[0][1] + worldData[i][4]*result[1][1] + worldData[i][5]*result[2][1] + result[3][1];
+			eyeData[i][5] = worldData[i][3]*result[0][2] + worldData[i][4]*result[1][2] + worldData[i][5]*result[2][2] + result[3][2];
 		}
+		//System.out.println(Arrays.deepToString(eyeData));
+		return eyeData;
 	}
 	
+	public static double[][] EyeToPerspective(double[][] eyeData) {
+		double[][] perspectiveData = new double[getLineNumber()][4];
+		double D = UserInput.getDistance();
+		double S = UserInput.getSize();
+		double Vsx = UserInput.getWidth()/2;
+		double Vsy = UserInput.getHeight()/2;
+		double Vcx = UserInput.getWidth()/2;
+		double Vcy = UserInput.getHeight()/2;
+		System.out.println("D:  " + D + "   S:  " + S);
+		System.out.println("Vsx:  " + Vsx + "   Vsy:  " + Vsy);
+		System.out.println("Vcx:  " + Vcx + "   Vcy:  " + Vcy);
+		for(int i = 0; i<getLineNumber(); i++) {
+			perspectiveData[i][0] = (D*eyeData[i][0])/(S*eyeData[i][2])*Vsx+Vcx;
+			perspectiveData[i][1] = (D*eyeData[i][1])/(S*eyeData[i][2])*Vcy+Vcy;
+			perspectiveData[i][2] = (D*eyeData[i][3])/(S*eyeData[i][5])*Vsx+Vcx;
+			perspectiveData[i][3] = (D*eyeData[i][4])/(S*eyeData[i][5])*Vcy+Vcy;
+		}
+		//System.out.println(Arrays.deepToString(perspectiveData));
+		return perspectiveData;
+	}
+	
+
 	public static BufferedImage ViewportSpec(int width, int height) {
 		Color black = new Color(0,0,0);
 		int rgb = black.getRGB();
@@ -210,32 +254,23 @@ public class Transformations {
 		setLineNumber(number);
 		return datalines;
 	}
-	
-public static void PerspectiveData(double[][] datalines) { 
-	double[][] perspectiveData = new double[getLineNumber()][4];
-	int Vsx = UserInput.getWidth()/2;
-	int Vsy = UserInput.getHeight()/2;
-	int Vcx = UserInput.getWidth()/2;
-	int Vcy = UserInput.getHeight()/2;
-	double D = UserInput.getDistance();
-	double S = UserInput.getSize();
-	
-	for(int i = 0; i<getLineNumber(); i++) {
-		perspectiveData[i][0] = ((D*datalines[i][0])/(S*datalines[i][2]))*Vsx+Vcx;
-		perspectiveData[i][1] = ((D*datalines[i][1])/(S*datalines[i][2]))*Vsx+Vcx;
-		perspectiveData[i][2] = ((D*datalines[i][3])/(S*datalines[i][5]))*Vsx+Vcx;
-		perspectiveData[i][3] = ((D*datalines[i][4])/(S*datalines[i][5]))*Vsx+Vcx; 
-	}
-	
-	UserInput.setPerspectiveData(perspectiveData);
-}
+
 	
 public static BufferedImage Displaypixel(double[][] datalines) {
 	
-		PerspectiveData(datalines);
+		//PerspectiveData(datalines);
 		double[][] array = UserInput.getPerspectiveData();
 		
-		BufferedImage image = new BufferedImage(0, 0, 0);
+		BufferedImage image = new BufferedImage(UserInput.getWidth(), UserInput.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		
+		Color black = new Color(0,0,0);
+		int blackRGB = black.getRGB();
+		for(int i=0; i<UserInput.getWidth(); i++) {
+			for(int j=0; j<UserInput.getHeight(); j++) {
+				image.setRGB(i, j, blackRGB);			
+			}
+		}		
+		
 		Color green = new Color(128, 255, 0); 
 		int rgb = green.getRGB();
 		int x1, y1, x2, y2;
