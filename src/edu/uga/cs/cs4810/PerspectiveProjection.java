@@ -70,7 +70,7 @@ class PaintPanel extends JPanel {
 			{
 				UserInput.setPerspectiveData(Transformations.EyeToPerspective(UserInput.getEyeData()));
 				//System.out.println(Arrays.deepToString(UserInput.getEyeData()));
-				System.out.println(Arrays.deepToString(UserInput.getPerspectiveData()));
+				//System.out.println(Arrays.deepToString(UserInput.getPerspectiveData()));
 				clicked2 = true;
 				repaint();
 			}
@@ -126,7 +126,7 @@ class PaintPanel extends JPanel {
 				
 				//double[][] eyeMatrix = Transformations.ApplyTransformations(UserInput.getWorldData(), transformationMatrix);
 				UserInput.setEyeData(transformationMatrix);
-				//System.out.println(Arrays.deepToString(UserInput.getEyeData()));
+				System.out.println("EyeData before Transformation:\n" +Arrays.deepToString(UserInput.getEyeData()));
 			}
 		});
 
@@ -157,11 +157,14 @@ class PaintPanel extends JPanel {
 
 				double[][] concat = Transformations.Concatenate(Transformations.Concatenate(translate, scale), rotateZ);
 				double[][] transformation = Transformations.Concatenate(Transformations.Concatenate(concat, rotateY), rotateX);	
-				
+				System.out.println("Old EyeData\n"+Arrays.deepToString(UserInput.getEyeData()));
 				double[][] eyeData = Transformations.ApplyTransformation(UserInput.getEyeData(), transformation);
-				UserInput.setEyeData(eyeData);
+				System.out.println("Rotation Array\n" + Arrays.deepToString(transformation));
 				
+				UserInput.setEyeData(eyeData);
+				System.out.println("New EyeData\n"+Arrays.deepToString(UserInput.getEyeData()));
 				UserInput.setPerspectiveData(Transformations.EyeToPerspective(UserInput.getEyeData()));
+				System.out.println(Arrays.deepToString(UserInput.getPerspectiveData()));
 				clicked2 = true;
 				repaint();
 
@@ -178,8 +181,9 @@ class PaintPanel extends JPanel {
 			BufferedImage viewport = Transformations.ViewportSpec(UserInput.getWidth(), UserInput.getHeight());
 			
 			if(clicked2==true) {
-			
+
 			viewport = Transformations.Displaypixel(UserInput.getPerspectiveData());
+			
 			}
 			 
 			g.drawImage(viewport, UserInput.getXLocation(), UserInput.getYLocation(), this);

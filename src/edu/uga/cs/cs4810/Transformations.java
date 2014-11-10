@@ -35,8 +35,8 @@ public class Transformations {
 	
 	public static double[][] BasicZRotate(double angle) {
 		double theta = Math.toRadians(angle);
-		double cos = Math.round(Math.cos(theta)*100000)/100000;
-		double sin =  Math.round(Math.sin(theta)*100000)/100000;
+		double cos = Math.floor(Math.cos(theta)*100000)/100000;
+		double sin =  Math.floor(Math.sin(theta)*100000)/100000;
 		double[][] matrix = {{ cos,  sin, 0, 0}, 
 							 {-sin,  cos, 0, 0}, 
 							 {  0,    0,  1, 0},
@@ -46,8 +46,8 @@ public class Transformations {
 	
 	public static double[][] BasicYRotate(double angle) {
 		double theta = Math.toRadians(angle);
-		double cos = Math.round(Math.cos(theta)*100000)/100000;
-		double sin =  Math.round(Math.sin(theta)*100000)/100000;
+		double cos = Math.floor(Math.cos(theta)*100000)/100000;
+		double sin =  Math.floor(Math.sin(theta)*100000)/100000;
 		double[][] matrix = {{cos, 0, -sin, 0}, 
 							 { 0,  1,   0,  0}, 
 							 {sin, 0,  cos, 0},
@@ -57,8 +57,8 @@ public class Transformations {
 
 	public static double[][] BasicXRotate(double angle) {
 		double theta = Math.toRadians(angle);
-		double cos = Math.round(Math.cos(theta)*100000)/100000;
-		double sin =  Math.round(Math.sin(theta)*100000)/100000;
+		double cos = Math.floor(Math.cos(theta)*100000)/100000;
+		double sin =  Math.floor(Math.sin(theta)*100000)/100000;
 		double[][] matrix = {{1,   0,   0,  0}, 
 							 {0,  cos, sin, 0}, 
 							 {0, -sin, cos, 0},
@@ -83,7 +83,7 @@ public class Transformations {
 		return product;
 	}
 	
-	public static double[][] ApplyTransformation(double[][] worldData, double[][] transformMatrix) {
+	public static double[][] ApplyTransformation(double[][] eyeData, double[][] transformMatrix) {
 		
 		double[][] result = transformMatrix;
 		
@@ -93,17 +93,17 @@ public class Transformations {
 			}
 		}
 
-		double[][]eyeData = new double[getLineNumber()][6];
+		double[][]newEyeData = new double[getLineNumber()][6];
 		for(int i = 0; i<getLineNumber(); i++) {
-			eyeData[i][0] = worldData[i][0]*result[0][0] + worldData[i][1]*result[1][0] + worldData[i][2]*result[2][0] + result[3][0];
-			eyeData[i][1] = worldData[i][0]*result[0][1] + worldData[i][1]*result[1][1] + worldData[i][2]*result[2][1] + result[3][1];
-			eyeData[i][2] = worldData[i][0]*result[0][2] + worldData[i][1]*result[1][2] + worldData[i][2]*result[2][2] + result[3][2];
-			eyeData[i][3] = worldData[i][3]*result[0][0] + worldData[i][4]*result[1][0] + worldData[i][5]*result[2][0] + result[3][0];
-			eyeData[i][4] = worldData[i][3]*result[0][1] + worldData[i][4]*result[1][1] + worldData[i][5]*result[2][1] + result[3][1];
-			eyeData[i][5] = worldData[i][3]*result[0][2] + worldData[i][4]*result[1][2] + worldData[i][5]*result[2][2] + result[3][2];
+			newEyeData[i][0] = eyeData[i][0]*result[0][0] + eyeData[i][1]*result[1][0] + eyeData[i][2]*result[2][0] + result[3][0];
+			newEyeData[i][1] = eyeData[i][0]*result[0][1] + eyeData[i][1]*result[1][1] + eyeData[i][2]*result[2][1] + result[3][1];
+			newEyeData[i][2] = eyeData[i][0]*result[0][2] + eyeData[i][1]*result[1][2] + eyeData[i][2]*result[2][2] + result[3][2];
+			newEyeData[i][3] = eyeData[i][3]*result[0][0] + eyeData[i][4]*result[1][0] + eyeData[i][5]*result[2][0] + result[3][0];
+			newEyeData[i][4] = eyeData[i][3]*result[0][1] + eyeData[i][4]*result[1][1] + eyeData[i][5]*result[2][1] + result[3][1];
+			newEyeData[i][5] = eyeData[i][3]*result[0][2] + eyeData[i][4]*result[1][2] + eyeData[i][5]*result[2][2] + result[3][2];
 		}
 		//System.out.println(Arrays.deepToString(eyeData));
-		return eyeData;
+		return newEyeData;
 	}
 
 	//Coordinate Conversions
