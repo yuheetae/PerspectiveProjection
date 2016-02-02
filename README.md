@@ -10,3 +10,7 @@
 
 * Specify viewport and display size
 * translate, scale , and rotate 3d object in perspective projection
+
+### Outside Libraries ###
+
+* MigLayout
