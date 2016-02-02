@@ -1,5 +1,12 @@
-# README #
+# PerspectiveProjection #
 
 ### Description ###
 
-* Swing GUI that allows user to input a text file with line coordinates and displays them. The user can specify the characteristics of the viewport and display. The user can also translate, scale and rotate the object in perspective projection.
+* Java Implementation of Perspective Projection of a 3d object
+* Swing GUI allows user to input line coordinates to create a 3d object 
+* User can manipulate 3d object using perspective projection
+
+### Features ###
+
+* Specify viewport and display size
+* translate, scale , and rotate 3d object in perspective projection
